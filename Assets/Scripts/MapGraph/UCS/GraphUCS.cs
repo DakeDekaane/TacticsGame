@@ -31,6 +31,7 @@ public class GraphUCS : MonoBehaviour
             t.searchData.selectableData.Clear();
             t.status.current = false;
             t.status.selectable = false;
+            t.status.target = false;
             t.renderer.UpdateMaterial();
         }
         selectableTiles.Clear();
@@ -41,6 +42,7 @@ public class GraphUCS : MonoBehaviour
         foreach(Tile t in attackableTiles) {
             t.searchData.attackableData.Clear();
             t.status.attackable = false;
+            t.status.target = false;
             t.renderer.UpdateMaterial();
         }
         attackableTiles.Clear();

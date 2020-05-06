@@ -16,5 +16,5 @@ MonoBehaviour:
   _prefab: {fileID: 0}
   _bonusDef: 2
   _bonusAvo: 30
-  _movementCost: 2
+  _movementCost: 3
   _walkable: 1

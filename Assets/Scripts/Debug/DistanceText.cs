@@ -5,18 +5,23 @@ using TMPro;
 
 public class DistanceText : MonoBehaviour
 {
-    public TileUCSData data;
-    public TextMeshPro label;
+    public TileAStarData data;
+    public TextMeshPro labelF;
+    public TextMeshPro labelG;
+    public TextMeshPro labelH;
 
     void Start() {
-        data = GetComponent<TileUCSData>();
-        label = transform.Find("Canvas/Text").GetComponentInChildren<TextMeshPro>();
+        data = GetComponent<TileAStarData>();
+        labelF = transform.Find("Canvas/F").GetComponentInChildren<TextMeshPro>();
+        labelG = transform.Find("Canvas/G").GetComponentInChildren<TextMeshPro>();
+        labelH = transform.Find("Canvas/H").GetComponentInChildren<TextMeshPro>();
     }
 
     void Update() {
-        if(data.attackableData.distance > 0) {
-            label.text = "" + data.attackableData.distance;
-            label.gameObject.SetActive(true);
+        if(data.f != 0) {
+            labelF.text = "" + data.f;
+            labelG.text = "" + data.g;
+            labelH.text = "" + data.h;
         }
     }
 }

@@ -4,14 +4,21 @@ using UnityEngine;
 
 public class TileAStarData : MonoBehaviour
 {
-    public float f = 0;
-    public float g = 0;
-    public float h = 0;
+    public int g = 0;
+    public int h = 0;
     public Tile parent = null;
+    public int distance;
+
+    public int f {
+        get {
+            return g + h;
+        }
+    }
 
     public void Reset() {
-        f = g = h = 0;
+        g = h = 0;
         parent = null;
+        distance = 0 ;
     }
 
 }
