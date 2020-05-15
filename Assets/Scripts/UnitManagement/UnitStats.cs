@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterStats : MonoBehaviour
+public class UnitStats : MonoBehaviour
 {
     public string characterName;
 

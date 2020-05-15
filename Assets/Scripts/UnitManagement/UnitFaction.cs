@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New CharacterFaction", menuName = "CharacterFaction", order = 52)]
+[CreateAssetMenu(fileName = "New UnitFaction", menuName = "UnitFaction", order = 52)]
 
-public class CharacterFaction : ScriptableObject
+public class UnitFaction : ScriptableObject
 {
     [SerializeField]
     public string _name;
     [SerializeField]
-    public List<CharacterFaction> _allies;
+    public List<UnitFaction> _allies;
     [SerializeField]
-    public List<CharacterFaction> _enemies;
+    public List<UnitFaction> _enemies;
 
     public new string name {
         get {
@@ -19,13 +19,13 @@ public class CharacterFaction : ScriptableObject
         }
     }
 
-    public List<CharacterFaction> allies {
+    public List<UnitFaction> allies {
         get {
             return _allies;
         }
     }
 
-    public List<CharacterFaction> enemies {
+    public List<UnitFaction> enemies {
         get {
             return _enemies;
         }

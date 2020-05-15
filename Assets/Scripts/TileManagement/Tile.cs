@@ -8,7 +8,7 @@ public class Tile: MonoBehaviour {
     public TileGraphData graphData;
     public TileUCSData searchData;
     public TileAStarData AStarData;
-    public Character currentCharacter;
+    public Unit currentCharacter;
     public TerrainData terrain;
 
     void Start(){
@@ -21,12 +21,13 @@ public class Tile: MonoBehaviour {
 
     private RaycastHit viewHit;
 
-    public Character GetCharacter() {
+    public Unit GetUnit() {
         if (Physics.Raycast(transform.position, Vector3.up, out viewHit, 1)) {
             if(viewHit.transform.tag == "Player" || viewHit.transform.tag == "Enemy" || viewHit.transform.tag == "Ally") {
-                return viewHit.transform.GetComponent<Character>();
+                return viewHit.transform.GetComponent<Unit>();
             }
         }
         return null;
     }
+    
 }

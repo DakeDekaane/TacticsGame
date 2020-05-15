@@ -9,21 +9,38 @@ public class GraphAStar : MonoBehaviour
     private List<Tile> openList = new List<Tile>();
     private List<Tile> closedList = new List<Tile>();
     [SerializeField]
-    private List<Tile> path = new List<Tile>();
+    private List<Tile> tmpPath = new List<Tile>();
+    [SerializeField]
+    public Stack<Tile> path = new Stack<Tile>();
 
     private Tile tmpTile;
     [SerializeField]
-    public Tile actualTargetTile;
+    public Tile targetTile;
+
+    public Unit targetUnit;
 
     void Start() {
         instance = this;
     }
 
+    public void Reset() {
+        tmpPath.Clear();
+        path.Clear();
+        closedList.Clear();
+        openList.Clear();
+    }
+
+    //Pathfinding (A*)
     public void FindPath(Tile origin, Tile target) {
         origin.AStarData.Reset();
         target.AStarData.Reset();
+        Reset();
 
         openList.Add(origin);
+
+        //Gets target unit.
+        targetTile = target;
+        targetUnit = target.GetUnit();
         
         while(openList.Count > 0) {
             tmpTile = openList[0];
@@ -41,19 +58,19 @@ public class GraphAStar : MonoBehaviour
                 return;
             }
 
-            foreach(TileTransition t in tmpTile.graphData.adjacentTiles) {
-                if(!t.tile.terrain.walkable || closedList.Contains(t.tile)){
+            foreach(Tile t in tmpTile.graphData.adjacentTiles) {
+                if(!t.terrain.walkable || closedList.Contains(t) || (t.GetUnit() && t.GetUnit() != targetUnit )){
                     continue;
                 }
 
-                int newMovemenCostToAdjacent = tmpTile.AStarData.g + GetDistance(tmpTile,t.tile);
-                if( newMovemenCostToAdjacent < t.tile.AStarData.g || !openList.Contains(t.tile)) {
-                    t.tile.AStarData.g = newMovemenCostToAdjacent;
-                    t.tile.AStarData.h = GetDistance(t.tile,target);
-                    t.tile.AStarData.parent = tmpTile;
+                int newMovemenCostToAdjacent = tmpTile.AStarData.g + GetDistance(tmpTile,t) + t.terrain.movementCost - 1;
+                if( newMovemenCostToAdjacent < t.AStarData.g || !openList.Contains(t)) {
+                    t.AStarData.g = newMovemenCostToAdjacent;
+                    t.AStarData.h = GetDistance(t,target);
+                    t.AStarData.parent = tmpTile;
 
-                    if(!openList.Contains(t.tile)) {
-                        openList.Add(t.tile);
+                    if(!openList.Contains(t)) {
+                        openList.Add(t);
                     }
                 }
             }
@@ -63,19 +80,39 @@ public class GraphAStar : MonoBehaviour
     void RetracePath(Tile origin, Tile target) {
         tmpTile = target;
 
+        //Fill list with complete path, target -> tiles -> origin
         while(tmpTile != origin) {
-            tmpTile.status.target = true;
-            tmpTile.renderer.UpdateMaterial();
-            path.Add(tmpTile);
+            tmpPath.Add(tmpTile);
             tmpTile = tmpTile.AStarData.parent;
         }
-        path.Reverse();
+
+        //Discarding target tile if there's an unit on it.
+        if (targetUnit) {
+            tmpPath.Remove(targetTile);
+        }
+
+        //Discarding tiles out of range
+        for(int i = 0; i < tmpPath.Count; i++) {
+            if(!tmpPath[i].status.selectable) {
+                continue;
+            }
+            tmpPath[i].status.target = true;
+            tmpPath[i].renderer.UpdateMaterial();
+            path.Push(tmpPath[i]);
+        }
     }
 
-    //Heuristic function
+    //Heuristic function 
+    //Manhattan
     public int GetDistance(Tile origin, Tile destiny) {
         int dx = (int)Mathf.Abs(origin.transform.position.x - destiny.transform.position.x);
         int dy = (int)Mathf.Abs(origin.transform.position.z - destiny.transform.position.z);
-        return dx + dy;
+        return dx + dy; //
     }
+    //Euclidean 
+    //public int GetDistance(Tile origin, Tile destiny) {
+    //    int dx = (int)(origin.transform.position.x - destiny.transform.position.x);
+    //    int dy = (int)(origin.transform.position.z - destiny.transform.position.z);
+    //    return (int)Mathf.Sqrt(dx*dx + dy*dy);
+    //}
 }

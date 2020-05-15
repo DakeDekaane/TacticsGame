@@ -7,7 +7,7 @@ public class ActiveCharacterManager : MonoBehaviour
     public static ActiveCharacterManager instance;
 
     public Tile selectedTile;
-    public Character activeCharacter;
+    public Unit activeUnit;
     public bool ready;
     public Tile targetTile;
 

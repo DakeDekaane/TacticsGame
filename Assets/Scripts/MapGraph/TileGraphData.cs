@@ -5,7 +5,7 @@ using UnityEngine;
 public class TileGraphData : MonoBehaviour
 {
     [SerializeField]
-    public List<TileTransition> adjacentTiles;
+    public List<Tile> adjacentTiles;
     
     void Start(){
         InitAdjacentTiles();
@@ -23,7 +23,7 @@ public class TileGraphData : MonoBehaviour
         foreach(Collider c in adjacentColliders) {
             Tile tmpTile = c.GetComponent<Tile>();
             if (tmpTile){
-                adjacentTiles.Add(new TileTransition(tmpTile,tmpTile.terrain.movementCost));
+                adjacentTiles.Add(tmpTile);
             }
         }
     }

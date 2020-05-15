@@ -16,17 +16,17 @@ public class TilePicker : MonoBehaviour {
             if(Physics.Raycast(viewRay,out viewHit)) {
                 tile = viewHit.transform.GetComponent<Tile>();
                 if(tile) {
-                    if (tile.GetCharacter()) {
+                    if (tile.GetUnit()) {
                         tile.status.current = true;
                         tile.renderer.UpdateMaterial();
                         ActiveCharacterManager.instance.selectedTile = tile;
-                         ActiveCharacterManager.instance.activeCharacter = tile.GetCharacter();
-                        GraphUCS.instance.GetInteractableTiles(ActiveCharacterManager.instance.selectedTile,ActiveCharacterManager.instance.activeCharacter);
+                        ActiveCharacterManager.instance.activeUnit = tile.GetUnit();
+                        GraphUCS.instance.GetInteractableTiles(ActiveCharacterManager.instance.selectedTile,ActiveCharacterManager.instance.activeUnit);
                         ActiveCharacterManager.instance.ready = true;
                     }
                     //Probably will be moved to another place
                     else if(!tile.status.attackable && !tile.status.selectable) {
-                        ActiveCharacterManager.instance.activeCharacter = null;
+                        ActiveCharacterManager.instance.activeUnit = null;
                         GraphUCS.instance.ClearInteractableTiles();
                         ActiveCharacterManager.instance.ready = false;
                     }
@@ -44,6 +44,7 @@ public class TilePicker : MonoBehaviour {
                     ActiveCharacterManager.instance.targetTile = tile;
                     GraphAStar.instance.FindPath(ActiveCharacterManager.instance.selectedTile,ActiveCharacterManager.instance.targetTile);
                     ActiveCharacterManager.instance.ready = false;
+                    StartCoroutine(ActiveCharacterManager.instance.activeUnit.movement.FollowPath());
                     //
                 }
             }

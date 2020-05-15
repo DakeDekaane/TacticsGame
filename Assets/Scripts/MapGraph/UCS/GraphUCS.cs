@@ -16,9 +16,9 @@ public class GraphUCS : MonoBehaviour
         instance = this;
     }
 
-    public void GetInteractableTiles(Tile tile, Character character) {
-        GetSelectableTiles(tile, character);
-        GetAttackableTiles(character);
+    public void GetInteractableTiles(Tile tile, Unit unit) {
+        GetSelectableTiles(tile, unit);
+        GetAttackableTiles(unit);
     }
 
     public void ClearInteractableTiles() {
@@ -48,7 +48,7 @@ public class GraphUCS : MonoBehaviour
         attackableTiles.Clear();
     }
 
-    public void GetSelectableTiles(Tile tile, Character character) {
+    public void GetSelectableTiles(Tile tile, Unit unit) {
         
         ClearSelectableTiles();
 
@@ -63,17 +63,17 @@ public class GraphUCS : MonoBehaviour
                 selectableTiles.Add(tmpTile);
                 tmpTile.status.selectable = true;
                 //Is tile on our range?
-                if(tmpTile.searchData.selectableData.distance < character.stats.movementPoints) {
-                    foreach(TileTransition t in tmpTile.graphData.adjacentTiles) {
+                if(tmpTile.searchData.selectableData.distance < unit.stats.movementPoints) {
+                    foreach(Tile t in tmpTile.graphData.adjacentTiles) {
                         //Do we have movement points left?
-                        if (tmpTile.searchData.selectableData.distance + t.cost <= character.stats.movementPoints) {
+                        if (tmpTile.searchData.selectableData.distance + t.terrain.movementCost <= unit.stats.movementPoints) {
                             //Is an enemy on tile?
-                            if (t.tile.GetCharacter() == null || !character.faction.enemies.Contains(t.tile.GetCharacter().faction)) {
-                                if(!t.tile.searchData.selectableData.visited) {
-                                    t.tile.searchData.selectableData.parent = tmpTile;
-                                    t.tile.searchData.selectableData.visited = true;
-                                    t.tile.searchData.selectableData.distance = tmpTile.searchData.selectableData.distance + t.cost;
-                                    process.Enqueue(new TilePQ(t.tile,t.tile.searchData.selectableData.distance));
+                            if (t.GetUnit() == null || !unit.faction.enemies.Contains(t.GetUnit().faction)) {
+                                if(!t.searchData.selectableData.visited) {
+                                    t.searchData.selectableData.parent = tmpTile;
+                                    t.searchData.selectableData.visited = true;
+                                    t.searchData.selectableData.distance = tmpTile.searchData.selectableData.distance + t.terrain.movementCost;
+                                    process.Enqueue(new TilePQ(t,t.searchData.selectableData.distance));
                                 }
                             }
                         }
@@ -85,11 +85,11 @@ public class GraphUCS : MonoBehaviour
 
         //Removing tiles occupied by allies.
         for(int i = selectableTiles.Count - 1; i >= 0; i--) {
-            if (selectableTiles[i].GetCharacter() != null) {
+            if (selectableTiles[i].GetUnit() != null) {
                 if(tile == selectableTiles[i]) {
                 continue;
                 }
-                if(selectableTiles[i].GetCharacter().faction == character.faction || character.faction.allies.Contains(selectableTiles[i].GetCharacter().faction)) {
+                if(selectableTiles[i].GetUnit().faction == unit.faction || unit.faction.allies.Contains(selectableTiles[i].GetUnit().faction)) {
                     selectableTiles[i].status.selectable = false;
                     selectableTiles[i].status.current = false;
                     selectableTiles[i].searchData.selectableData.Clear();
@@ -104,29 +104,32 @@ public class GraphUCS : MonoBehaviour
         }
     }
 
-    public void GetAttackableTiles(Character character) {
+    public void GetAttackableTiles(Unit unit) {
         ClearAttackableTiles();
         
         foreach(Tile tile in selectableTiles) {
-            if(tile.searchData.selectableData.distance == character.stats.movementPoints) {
-                processAttack.Enqueue(tile);
-                tile.searchData.attackableData.visited = true;
+            foreach(Tile adjTile in tile.graphData.adjacentTiles){
+                if(!adjTile.status.selectable) {
+                    processAttack.Enqueue(tile);
+                    tile.searchData.attackableData.visited = true;
+                    break;
+                }
             }
         }
 
         while (processAttack.Count > 0) {
             tmpTile = processAttack.Dequeue();
             attackableTiles.Add(tmpTile);
-            if( (tmpTile.terrain.walkable && tmpTile.GetCharacter() == null) || ( tmpTile.GetCharacter() != null && ! (character.faction.allies.Contains(tmpTile.GetCharacter().faction) || character.faction == tmpTile.GetCharacter().faction))) {
+            if( (tmpTile.terrain.walkable && tmpTile.GetUnit() == null) || ( tmpTile.GetUnit() != null && ! (unit.faction.allies.Contains(tmpTile.GetUnit().faction) || unit.faction == tmpTile.GetUnit().faction))) {
                 tmpTile.status.attackable = true;
             }
-            if(tmpTile.searchData.attackableData.distance < character.stats.attackRangeMax) {
-                foreach(TileTransition t in tmpTile.graphData.adjacentTiles) {
-                    if(!t.tile.searchData.attackableData.visited) {
-                        t.tile.searchData.attackableData.parent = tmpTile;
-                        t.tile.searchData.attackableData.visited = true;
-                        t.tile.searchData.attackableData.distance = tmpTile.searchData.attackableData.distance + 1;
-                        processAttack.Enqueue(t.tile);
+            if(tmpTile.searchData.attackableData.distance < unit.stats.attackRangeMax) {
+                foreach(Tile t in tmpTile.graphData.adjacentTiles) {
+                    if(!t.searchData.attackableData.visited) {
+                        t.searchData.attackableData.parent = tmpTile;
+                        t.searchData.attackableData.visited = true;
+                        t.searchData.attackableData.distance = tmpTile.searchData.attackableData.distance + 1;
+                        processAttack.Enqueue(t);
                     }
                 }
             }
@@ -138,7 +141,7 @@ public class GraphUCS : MonoBehaviour
     }
 
 
-    public void GetAttackableTiles(Tile tile, Character character) {
+    public void GetAttackableTiles(Tile tile, Unit unit) {
         ClearAttackableTiles();
 
         processAttack.Enqueue(tile);
@@ -148,22 +151,22 @@ public class GraphUCS : MonoBehaviour
             tmpTile = processAttack.Dequeue();
             attackableTiles.Add(tmpTile);
             tmpTile.status.attackable = true;
-            if(tmpTile.searchData.attackableData.distance < (character.stats.movementPoints + character.stats.attackRangeMax)) {
-                foreach(TileTransition t in tmpTile.graphData.adjacentTiles) {
-                    if (tmpTile.searchData.attackableData.distance + t.cost <= character.stats.movementPoints) {
-                        if(!t.tile.searchData.attackableData.visited || 
-                            ((t.tile.searchData.attackableData.distance != tmpTile.searchData.attackableData.distance + t.cost) && (t.tile.searchData.attackableData.distance != tmpTile.searchData.attackableData.distance - tmpTile.terrain.movementCost))) {
-                        t.tile.searchData.attackableData.parent = tmpTile;
-                        t.tile.searchData.attackableData.visited = true;
-                        t.tile.searchData.attackableData.distance = tmpTile.searchData.attackableData.distance + t.cost;
-                        processAttack.Enqueue(t.tile);
+            if(tmpTile.searchData.attackableData.distance < (unit.stats.movementPoints + unit.stats.attackRangeMax)) {
+                foreach(Tile t in tmpTile.graphData.adjacentTiles) {
+                    if (tmpTile.searchData.attackableData.distance + t.terrain.movementCost <= unit.stats.movementPoints) {
+                        if(!t.searchData.attackableData.visited || 
+                            ((t.searchData.attackableData.distance != tmpTile.searchData.attackableData.distance + t.terrain.movementCost) && (t.searchData.attackableData.distance != tmpTile.searchData.attackableData.distance - tmpTile.terrain.movementCost))) {
+                        t.searchData.attackableData.parent = tmpTile;
+                        t.searchData.attackableData.visited = true;
+                        t.searchData.attackableData.distance = tmpTile.searchData.attackableData.distance + t.terrain.movementCost;
+                        processAttack.Enqueue(t);
                         }
                     }
                 }
             }
         }
         for(int i = attackableTiles.Count - 1; i >= 0; i--) {
-            if(attackableTiles[i].searchData.attackableData.distance < character.stats.attackRangeMin) {
+            if(attackableTiles[i].searchData.attackableData.distance < unit.stats.attackRangeMin) {
                 attackableTiles[i].status.attackable = false;
                 attackableTiles[i].searchData.attackableData.Clear();
                 attackableTiles.Remove(attackableTiles[i]);
