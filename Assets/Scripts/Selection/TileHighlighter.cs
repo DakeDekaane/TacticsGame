@@ -5,8 +5,8 @@ using UnityEngine;
 public class TileHighlighter : MonoBehaviour
 {
     public GameObject highlighter;
-    public Vector3 offset;
-    public int distance;
+    public Vector3 positionOffset;
+    //public int distance;
     private Ray viewRay;
     private RaycastHit viewHit;
     private Tile tile;
@@ -21,11 +21,11 @@ public class TileHighlighter : MonoBehaviour
     {
         if(Input.mousePosition != lastMousePosition) {
             viewRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if(Physics.Raycast(viewRay,out viewHit,Mathf.Infinity,layerMask) && (highlighter.transform.position != viewHit.transform.position + offset)) {
+            if(Physics.Raycast(viewRay,out viewHit,Mathf.Infinity,layerMask) && (highlighter.transform.position != viewHit.transform.position + positionOffset)) {
                 tile = viewHit.transform.GetComponent<Tile>();
                 if(tile){
                     Debug.Log("Over tile: " + tile.name);
-                    highlighter.transform.position = tile.transform.position + offset;
+                    highlighter.transform.position = tile.transform.position + positionOffset;
                 }
             }
         }

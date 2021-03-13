@@ -8,12 +8,13 @@ public class PathArrowPool : MonoBehaviour
     public List<GameObject> straightPathPool;
     public List<GameObject> curvePathPool;
     public List<GameObject> endPathPool;
-    public GameObject straightPath;
-    public GameObject curvePath;
-    public GameObject endPath;
-    public int straightPathAmount;
-    public int curvePathAmount;
-    public int endPathAmount;
+    [SerializeField] private GameObject straightPath;
+    [SerializeField] private GameObject curvePath;
+    [SerializeField] private GameObject endPath;
+    [SerializeField] private int straightPathAmount;
+    [SerializeField] private int curvePathAmount;
+    [SerializeField] private int endPathAmount;
+
     void Awake() {
         instance = this;
     }
@@ -24,7 +25,7 @@ public class PathArrowPool : MonoBehaviour
         endPathPool = CreatePool(endPath,endPathAmount);
     }
 
-    public List<GameObject> CreatePool(GameObject item, int amount) {
+    private List<GameObject> CreatePool(GameObject item, int amount) {
         List<GameObject> pool = new List<GameObject>();
         GameObject tmp;
         for(int i = 0; i < amount; ++i) {

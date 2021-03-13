@@ -67,8 +67,8 @@ public class GraphUCS : MonoBehaviour
                     foreach(Tile t in tmpTile.graphData.adjacentTiles) {
                         //Do we have movement points left?
                         if (tmpTile.searchData.selectableData.distance + t.terrain.movementCost <= unit.stats.movementPoints) {
-                            //Is an enemy on tile?
-                            if (t.GetUnit() == null || !unit.faction.enemies.Contains(t.GetUnit().faction)) {
+                            //Is an unit on tile?
+                            if (t.GetUnit() == null) {
                                 if(!t.searchData.selectableData.visited) {
                                     t.searchData.selectableData.parent = tmpTile;
                                     t.searchData.selectableData.visited = true;
