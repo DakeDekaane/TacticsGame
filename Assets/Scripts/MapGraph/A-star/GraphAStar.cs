@@ -12,6 +12,12 @@ public class GraphAStar : MonoBehaviour
     private List<Tile> tmpPath = new List<Tile>();
     [SerializeField]
     public Stack<Tile> path = new Stack<Tile>();
+    public Tile[] drawPath {
+        get{
+            return path.ToArray();
+        }
+    }
+    
 
     private Tile tmpTile;
     [SerializeField]
@@ -97,7 +103,7 @@ public class GraphAStar : MonoBehaviour
                 continue;
             }
             tmpPath[i].status.target = true;
-            tmpPath[i].renderer.UpdateMaterial();
+            //tmpPath[i].renderer.UpdateMaterial();
             path.Push(tmpPath[i]);
         }
     }
