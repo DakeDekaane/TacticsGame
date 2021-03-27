@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class TileGraphData : MonoBehaviour
 {
-    [SerializeField]
-    public List<Tile> adjacentTiles;
+    [SerializeField] public List<Tile> adjacentTiles;
     
     void Start(){
         InitAdjacentTiles();

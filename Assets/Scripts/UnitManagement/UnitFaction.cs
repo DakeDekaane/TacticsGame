@@ -6,12 +6,9 @@ using UnityEngine;
 
 public class UnitFaction : ScriptableObject
 {
-    [SerializeField]
-    public string _name;
-    [SerializeField]
-    public List<UnitFaction> _allies;
-    [SerializeField]
-    public List<UnitFaction> _enemies;
+    [SerializeField] public string _name;
+    [SerializeField] public List<UnitFaction> _allies;
+    [SerializeField] public List<UnitFaction> _enemies;
 
     public new string name {
         get {

@@ -9,11 +9,22 @@ public class ActiveCharacterManager : MonoBehaviour
     public Tile selectedTile;
     public Unit activeUnit;
     public bool ready;
+    public bool moving {
+        get {
+            return activeUnit.movementController.moving;
+        }
+    }
     public Tile targetTile;
 
     void Start(){
         instance = this;
         ready = false;
+    }
+
+    void Update() {
+        if (!activeUnit) {
+            targetTile = null;
+        }
     }
     
 }

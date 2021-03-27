@@ -4,13 +4,24 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    public UnitStats stats;
+    public UnitStatsController stats;
     public UnitFaction faction;
-    public UnitMovement movement;
+    public UnitMovementController movementController;
+    public UnitTurnController turnController;
+
+    public bool turn {
+        get {
+            return GetComponent<UnitTurnController>().turn;
+        }
+        set {
+            GetComponent<UnitTurnController>().turn = value;
+        }
+    }
 
     void Start()
     {
-        stats = GetComponent<UnitStats>();
-        movement = GetComponent<UnitMovement>();
+        stats = GetComponent<UnitStatsController>();
+        movementController = GetComponent<UnitMovementController>();
+        turnController = GetComponent<UnitTurnController>();
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TileStatus : MonoBehaviour {
-    public bool walkable;
+    //public bool walkable;
     public bool current;
     public bool selectable;
     public bool attackable;

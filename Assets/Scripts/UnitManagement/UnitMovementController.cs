@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitMovement : MonoBehaviour
+public class UnitMovementController : MonoBehaviour
 {
     private Tile tmpTile;
     public float speed = 100.0f;
     private Vector3 tmpPosition;
     private Vector3 heading;
+    public bool moving;
     public IEnumerator FollowPath() {
 
         //We're already on the target tile.
         if(GraphAStar.instance.path.Count == 0) {
+            moving = false;
             yield break;
         }
 
         //Moving to target tile.
-        //moving = true;
+        moving = true;
         tmpTile =  GraphAStar.instance.path.Pop();
         tmpPosition = new Vector3(tmpTile.transform.position.x,transform.position.y,tmpTile.transform.position.z);
         heading = tmpPosition - transform.position;
@@ -26,6 +28,7 @@ public class UnitMovement : MonoBehaviour
             Debug.Log("Target position:" + tmpPosition);
             if (transform.position == tmpPosition) {
                 if(GraphAStar.instance.path.Count == 0) {
+                    moving = false;
                     yield break;
                 }
                 tmpTile =  GraphAStar.instance.path.Pop();

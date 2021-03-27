@@ -8,20 +8,16 @@ public class GraphAStar : MonoBehaviour
 
     private List<Tile> openList = new List<Tile>();
     private List<Tile> closedList = new List<Tile>();
-    [SerializeField]
-    private List<Tile> tmpPath = new List<Tile>();
-    [SerializeField]
-    public Stack<Tile> path = new Stack<Tile>();
+    [SerializeField] private List<Tile> tmpPath = new List<Tile>();
+    [SerializeField] public Stack<Tile> path = new Stack<Tile>();
     public Tile[] drawPath {
         get{
             return path.ToArray();
         }
     }
     
-
     private Tile tmpTile;
-    [SerializeField]
-    public Tile targetTile;
+    [SerializeField] public Tile targetTile;
 
     public Unit targetUnit;
 

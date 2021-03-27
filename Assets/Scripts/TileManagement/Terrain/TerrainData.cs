@@ -5,18 +5,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New TerrainData", menuName = "Terrain Data", order = 51)]
 public class TerrainData : ScriptableObject
 {
-    [SerializeField]
-    private string _tag;
-    [SerializeField]
-    private GameObject _prefab;
-    [SerializeField]
-    private int _bonusDef;
-    [SerializeField]
-    private int _bonusAvo;
-    [SerializeField]
-    private int _movementCost;
-    [SerializeField]
-    private bool _walkable;
+    [SerializeField] private string _tag;
+    [SerializeField] private GameObject _prefab;
+    [SerializeField] private int _bonusDef;
+    [SerializeField] private int _bonusAvo;
+    [SerializeField] private int _movementCost;
+    [SerializeField] private bool _walkable;
 
     public string tag {
         get {
