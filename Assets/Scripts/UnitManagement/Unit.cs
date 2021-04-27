@@ -7,14 +7,18 @@ public class Unit : MonoBehaviour
     public UnitStatsController stats;
     public UnitFaction faction;
     public UnitMovementController movementController;
-    public UnitTurnController turnController;
+    //public UnitTurnController turnController;
+    public PlayerFMS turnController;
+    public UnitAttackController attackController;
 
     public bool turn {
         get {
-            return GetComponent<UnitTurnController>().turn;
+            //return GetComponent<UnitTurnController>().turn;
+            return GetComponent<PlayerFMS>().turn;
         }
         set {
-            GetComponent<UnitTurnController>().turn = value;
+            //GetComponent<UnitTurnController>().turn = value;
+            GetComponent<PlayerFMS>().turn = value;
         }
     }
 
@@ -22,6 +26,12 @@ public class Unit : MonoBehaviour
     {
         stats = GetComponent<UnitStatsController>();
         movementController = GetComponent<UnitMovementController>();
-        turnController = GetComponent<UnitTurnController>();
+        //turnController = GetComponent<UnitTurnController>();
+        turnController = GetComponent<PlayerFMS>();
+    }
+
+    public void ReceiveDamage(int damage) {
+        stats.SubstractHealth(damage);
+        //UpdateHealthBar();
     }
 }

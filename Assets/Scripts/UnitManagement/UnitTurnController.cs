@@ -9,15 +9,10 @@ public class UnitTurnController : MonoBehaviour {
         WaitForOrder1,
         Move,
         WaitForOrder2,
+        ReadyForAttack,
         Attack,
         UseItem,
         End,
-    }
-
-    public enum UnitSelectStatus {
-        Selected,
-        Unselected,
-        Tapped
     }
 
     private bool moving {
@@ -25,9 +20,29 @@ public class UnitTurnController : MonoBehaviour {
             return GetComponent<UnitMovementController>().moving;
         }
     }
+
+    private bool attacking {
+        get {
+            return GetComponent<UnitAttackController>().attacking;
+        }
+    }
+    
+    public bool readyForAttack {
+        get {
+            return ActiveCharacterManager.instance.readyForAttack;
+        }
+    }
+
+    public bool isTapped {
+        get {
+            return selectStatus == UnitSelectStatus.Tapped;
+        }
+    }
+    public bool end;
     public UnitSelectStatus selectStatus = UnitSelectStatus.Unselected;
     public UnitState state = UnitState.Disabled;
     public bool turn;
+
 
     void Update() {
 
@@ -53,7 +68,7 @@ public class UnitTurnController : MonoBehaviour {
 
         //If unit is waiting for their first order, choose the correct path depending on selected action
         else if(state == UnitState.WaitForOrder1) {
-            Picker.instance.PickTarget();
+            Picker.instance.PickTargetForMovement();
             //Pick target tile, begin movement
             if(moving) {
                 state = UnitState.Move;
@@ -80,16 +95,30 @@ public class UnitTurnController : MonoBehaviour {
             GraphUCS.instance.ClearInteractableTiles(); //Watch out for the behaviour of this function
             PathDrawer.instance.DeletePath();
             //Attack
+            if(readyForAttack) {
+                state = UnitState.ReadyForAttack;
+            }
             //Use item
-            
+            //if(end) {
+                state = UnitState.End;
+            //}
             //!!
-            state = UnitState.End;
+            //state = UnitState.End;
             //!!
+        }
+
+        //If ready for attack, wait for attack confirmation
+        else if(state == UnitState.ReadyForAttack) {
+            if (attacking) {
+                state = UnitState.Attack;
+            }
         }
 
         //If unit has attacked, end their turn
         else if(state == UnitState.Attack) {
-            
+            if(!attacking) {
+                state = UnitState.End;
+            }
         }
 
         //If unit has used an item, end their turn
@@ -107,6 +136,15 @@ public class UnitTurnController : MonoBehaviour {
             state = UnitState.Disabled;
             selectStatus = UnitSelectStatus.Tapped;
             ActiveCharacterManager.instance.activeUnit = null;
+            end = false;
         }
+    }
+
+    public void Unselect() {
+        selectStatus = UnitSelectStatus.Unselected;
+    }
+
+    public void EndTurn() {
+        end = true;
     }
 }

@@ -24,8 +24,8 @@ public class UnitMovementController : MonoBehaviour
         heading = tmpPosition - transform.position;
         transform.rotation = Quaternion.LookRotation(heading);
         while(GraphAStar.instance.path.Count >= 0) {
-            Debug.Log("Current position:" + transform.position);
-            Debug.Log("Target position:" + tmpPosition);
+//            Debug.Log("Current position:" + transform.position);
+//            Debug.Log("Target position:" + tmpPosition);
             if (transform.position == tmpPosition) {
                 if(GraphAStar.instance.path.Count == 0) {
                     moving = false;

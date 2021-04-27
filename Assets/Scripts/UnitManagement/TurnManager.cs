@@ -57,7 +57,7 @@ public class TurnManager : MonoBehaviour
 
         //If player's turn, call Picker to receive player commands
         //if(turnTeam == Faction.Player) {
-            Picker.instance.PickPlayer();
+            Picker.instance.PickPlayerForMovement();
         //}
     }
 
@@ -67,7 +67,7 @@ public class TurnManager : MonoBehaviour
         foreach(Unit unit in list) {
             //if(turnTeam == Faction.Player) {
                 unit.turn = true;
-                unit.turnController.selectStatus = UnitTurnController.UnitSelectStatus.Unselected;
+                unit.turnController.Unselect();
                 //unit.selected = false;
             //}
             turnList.Add(unit);

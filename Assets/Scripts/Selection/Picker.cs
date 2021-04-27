@@ -13,7 +13,7 @@ public class Picker : MonoBehaviour {
     void Awake() {
         instance = this;
     }
-    public void PickPlayer() {
+    public void PickPlayerForMovement() {
 
         //If clicky but unit moving, do nothing
         if(Input.GetMouseButtonDown(0) && ActiveCharacterManager.instance.activeUnit && ActiveCharacterManager.instance.moving){
@@ -32,7 +32,7 @@ public class Picker : MonoBehaviour {
             if(Physics.Raycast(viewRay,out viewHit)) {
                 tmpTile = viewHit.transform.GetComponent<Tile>();
                 if(tmpTile) {
-                    if (tmpTile.GetUnit() && tmpTile.GetUnit().turn && tmpTile.GetUnit().turnController.selectStatus != UnitTurnController.UnitSelectStatus.Tapped) {
+                    if (tmpTile.GetUnit() && tmpTile.GetUnit().turn && !tmpTile.GetUnit().turnController.isTapped) {
                         Debug.Log("Clicky on unit (1)");
                         originTile = tmpTile;
                         originTile.status.current = true;
@@ -75,7 +75,7 @@ public class Picker : MonoBehaviour {
             }
         }
     }
-    public void PickTarget() {
+    public void PickTargetForMovement() {
         //If unit selected and ready, get left clicky
         //Draw ray and check if a tile has been clicked and if it's selectable
         //Set selected tile as target and run the pathfinder.
@@ -85,7 +85,7 @@ public class Picker : MonoBehaviour {
             if(Physics.Raycast(viewRay,out viewHit)) {
                 tmpTile = viewHit.transform.GetComponent<Tile>();
                 if(tmpTile.status.selectable) {
-                    Debug.Log("Clicky on target");
+                    Debug.Log("Clicky on move target");
                     targetTile = tmpTile;
                     targetTile.status.target = true;
                     targetTile.renderer.UpdateMaterial();
@@ -109,6 +109,23 @@ public class Picker : MonoBehaviour {
                     PathDrawer.instance.DeletePath();
                     targetTile = tmpTile;
                     PathDrawer.instance.DrawPath(originTile,targetTile);
+                }
+            }
+        }
+    }
+    public void PickTargetForAttack() {
+        if(ActiveCharacterManager.instance.ready && Input.GetMouseButtonDown(1)) {
+            viewRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if(Physics.Raycast(viewRay,out viewHit)) {
+                tmpTile = viewHit.transform.GetComponent<Tile>();
+                if(tmpTile.status.attackable && tmpTile.GetUnit()) {
+                    Debug.Log("Clicky on attack target");
+                    targetTile = tmpTile;
+                    targetTile.status.target = true;
+                    targetTile.renderer.UpdateMaterial();
+                    ActiveCharacterManager.instance.targetTile = targetTile;
+                    ActiveCharacterManager.instance.ready = false;
+                    //
                 }
             }
         }

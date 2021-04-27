@@ -395,6 +395,8 @@ GameObject:
   - component: {fileID: 9215208842479572386}
   - component: {fileID: 6300399821801725497}
   - component: {fileID: -3591783692082528664}
+  - component: {fileID: 3139800751944028706}
+  - component: {fileID: -1811393566661946939}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -497,6 +499,7 @@ MonoBehaviour:
   faction: {fileID: 11400000, guid: 105abe63f0fce7b4cacd8e68928f577d, type: 2}
   movementController: {fileID: 0}
   turnController: {fileID: 0}
+  attackController: {fileID: 0}
 --- !u!114 &9215208842479572386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -513,10 +516,12 @@ MonoBehaviour:
   maxHealth: 20
   baseAtk: 10
   baseDef: 5
+  baseAccuracy: 0
   baseAvoid: 0
   currentHealth: 0
   currentAtk: 0
   currentDef: 0
+  currentAccuracy: 0
   currentAvoid: 0
   movementPoints: 5
   attackRangeMax: 2
@@ -542,14 +547,47 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8201897557621522757}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 136eb9e9b3d9b93419dc5fb70b7fc4e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  end: 0
   selectStatus: 1
   state: 0
   turn: 0
+--- !u!114 &3139800751944028706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8201897557621522757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a089368cbfdd00f4688eec2d227ce5ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unit: {fileID: 0}
+  selectStatus: 1
+  turn: 0
+  end: 0
+--- !u!114 &-1811393566661946939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8201897557621522757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 603712c500e72b946b5c60a799241e6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attacking: 0
+  hitAccuracy: 0
+  hit: 0
+  damage: 0
 --- !u!1 &9180599638702050151
 GameObject:
   m_ObjectHideFlags: 0

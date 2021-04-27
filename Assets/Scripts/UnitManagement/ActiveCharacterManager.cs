@@ -9,6 +9,7 @@ public class ActiveCharacterManager : MonoBehaviour
     public Tile selectedTile;
     public Unit activeUnit;
     public bool ready;
+    public bool readyForAttack;
     public bool moving {
         get {
             return activeUnit.movementController.moving;
@@ -19,11 +20,13 @@ public class ActiveCharacterManager : MonoBehaviour
     void Start(){
         instance = this;
         ready = false;
+        readyForAttack = false;
     }
 
     void Update() {
         if (!activeUnit) {
             targetTile = null;
+            readyForAttack = false;
         }
     }
     

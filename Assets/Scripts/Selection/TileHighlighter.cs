@@ -24,7 +24,7 @@ public class TileHighlighter : MonoBehaviour
             if(Physics.Raycast(viewRay,out viewHit,Mathf.Infinity,layerMask) && (highlighter.transform.position != viewHit.transform.position + positionOffset)) {
                 tile = viewHit.transform.GetComponent<Tile>();
                 if(tile){
-                    Debug.Log("Over tile: " + tile.name);
+                    //Debug.Log("Over tile: " + tile.name);
                     highlighter.transform.position = tile.transform.position + positionOffset;
                 }
             }
